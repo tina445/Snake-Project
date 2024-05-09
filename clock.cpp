@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
     while (1) {
         tick++;
         sec = (tick / 2) % 60;
-        min = sec / 60;
+        min = tick / 120;
         //std::to_chars(s, s + 100, time);
         printw("%d : %d", min, sec);
         refresh();
