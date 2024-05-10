@@ -46,10 +46,10 @@ void GameMap::printMap() { // map 출력
     move(1, 0);
     for (int y = 0; y < MAPSIZE; y++) {
         for (int x = 0; x < MAPSIZE; x++) {
-            if (map[y][x] == 0) mvaddch(y+1, x, '\t' | COLOR_PAIR(((y + x) % 2) + 1)); 
-            else mvaddch(y+1, x, ' ' | COLOR_PAIR(map[y][x] + 2)); 
+            if (map[y][x] == 0) mvaddch(y+1, x * 4, '\t' | COLOR_PAIR(((y + x) % 2) + 1)); 
+            else mvaddch(y+1, x * 4, '\t' | COLOR_PAIR(map[y][x] + 2)); 
         }
-        printw("\n");
+        printw("\b\b\b\b\n");
     }
 }
 

@@ -7,7 +7,7 @@
 #include <deque>
 #include <vector>
 
-#define STARTPOS 8 // 시작시 snake head가 위치할 좌표
+#define STARTPOS 10 // 시작시 snake head가 위치할 좌표
 #define SNAKE_DEFAULT 3 // snake의 기본 사이즈
 
 #define BODY 3 // snake body id
