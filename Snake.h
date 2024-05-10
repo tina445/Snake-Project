@@ -1,25 +1,36 @@
 // Snake.h
+#ifndef SNAKE
+#define SNAKE
 
 #pragma once
-
+#include "GameMap.h"
 #include <deque>
-#include <utility>
+#include <vector>
 
-class Snake
-{
-public:
-    Snake(std::pair<int, int> headPos);
-    ~Snake();
+#define STARTPOS 8 // ì‹œì‘ì‹œ snake headê°€ ìœ„ì¹˜í•  ì¢Œí‘œ
+#define SNAKE_DEFAULT 3 // snakeì˜ ê¸°ë³¸ ì‚¬ì´ì¦ˆ
 
-    void SnakeLogic();
-    void turnSnake();
+#define BODY 3 // snake body id
+#define HEAD 4 // snake head id
 
-public:
-    enum DIR
-    {
-        UP, RIGHT, DOWN, LEFT
+class Snake {
+    public:
+        Snake(std::pair<int, int> headPos, int sizeDefault);
+        Snake();
+
+        void moveSnake(std::vector<std::vector<int>> &map, char input);
+        void turnSnake(char key_input);
+        void snakeLocate(std::vector<std::vector<int>> &map);
+        void Dead();
+
+    public:
+        enum DIR
+        {
+            UP, RIGHT, DOWN, LEFT
+        };
+        std::deque<std::pair<int, int>> body;
+        std::pair<int, int> head;
+        DIR dir = LEFT; //ï¿½ï¿½Ó¸ï¿½ ï¿½Úµï¿½ ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½
+        int snakeLength;
     };
-    std::deque<std::pair<int, int>> tail;
-    std::pair<int, int> head;
-    DIR dir = LEFT; //¹ì¸Ó¸® ÀÚµ¿ ÀÌµ¿ ¹æÇâ
-};
+#endif /* SNAKE */

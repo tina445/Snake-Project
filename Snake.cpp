@@ -4,53 +4,66 @@
 #include "Snake.h"
 using namespace std;
 
-Snake::Snake(pair<int, int> headPos)
+Snake::Snake(pair<int, int> headPos, int sizeDefault)
 {
-	Snake::head = headPos;
-	Snake::tail.push_back({ headPos.first - 1, headPos.second });
-	Snake::tail.push_back({ headPos.first - 2, headPos.second });
+	Snake::head = headPos; // snake head init
+
+	for (int i = 1; i < sizeDefault; i++) { // snake body init
+		Snake::body.push_back({ headPos.first, headPos.second + i});
+	}
+
+	snakeLength = SNAKE_DEFAULT; // 스네이크의 길이
 }
 
-void Snake::SnakeLogic()
+Snake::Snake() {}
+
+void Snake::moveSnake(vector<vector<int>> &map, char input)
 {
-	//pair<int, int> prev = tail[0];
-	//tail[0].first = head.first;
-	//tail[0].second = head.second;
+	turnSnake(input); // 방향키 입력을 받아 snake의 진행 방향 변경
 
-	tail[tail.size()-1].first = head.first;
-	tail[tail.size()-1].second = head.second;
+	body.push_front(head); // snake head가 있던 위치에 body 삽입
 
-	switch (dir)
+	switch (dir) // 진행 방향에 따라 snake의 head 좌표 이동
 	{
 	case UP:
-		head.second--;
-		break;
-	case RIGHT:
 		head.first--;
 		break;
-	case DOWN:
+	case RIGHT:
 		head.second++;
 		break;
-	case LEFT:
+	case DOWN:
 		head.first++;
+		break;
+	case LEFT:
+		head.second--;
 		break;
 	}
 
-	//pair<int, int> tmpPrev;
-	//for (auto iter = tail.begin() + 1; iter != tail.end(); iter++)
-	//{
-	//	tmpPrev = (*iter);
-	//	(*iter) = prev;
-	//	prev = tmpPrev;
-	//}
+	// snake 좌표 -> map 매핑
+	map[head.first][head.second] = HEAD;
+	map[body.front().first][body.front().second] = BODY; // snake head가 있던 위치에 body 삽입
+	map[body.back().first][body.back().second] = 0; // snake tail(body deque의 맨 끝 index)좌표를 빈 공간으로 대체
+
+	body.pop_back();
 }
 
-void Snake::turnSnake()
+void Snake::turnSnake(char key_input)
 {
-	if () //왼쪽 방향키 입력
-		dir = static_cast<DIR>((dir - 1 + 4) % 4);
-	else if () // 오른쪽 방향키 입력
-		dir = static_cast<DIR>((dir + 1) % 4);
-
-
+	if (key_input == 'L') { //왼쪽 방향키 입력
+		if (dir == RIGHT) Dead();
+		dir = LEFT;
+	}
+	else if (key_input == 'R') { // 오른쪽 방향키 입력
+		if (dir == LEFT) Dead();
+		dir = RIGHT;
+	}
+	else if (key_input == 'U') { // 위쪽 방향키 입력
+		if (dir == DOWN) Dead();
+		dir = UP;
+	}
+	else if (key_input == 'D') { // 아래쪽 방향키 입력
+		if (dir == UP) Dead();
+		dir = DOWN;
+	}
+	else return;
 }
