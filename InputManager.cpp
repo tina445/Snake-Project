@@ -1,38 +1,28 @@
-#ifndef INPUTMANAGER
-#define INPUTMANAGER
-
+#include "InputManager.h"
 #include <ncurses.h>
 
-namespace inputmanager {
-    class InputManager {
-        public:
-            char keyDown() {
-                int input = getch();
-                char ch;
+char InputManager::keyDown() {
+    int input = getch();
+    char ch;
 
-                switch (input)
-                {
-                case KEY_UP:
-                    ch = 'U';
-                    break;
-                case KEY_DOWN:
-                    ch = 'D';
-                    break;
-                case KEY_LEFT:
-                    ch = 'L';
-                    break;
-                case KEY_RIGHT:
-                    ch = 'R';
-                    break;
-                default:
-                    ch = ' ';
-                    break;
-                }
+    switch (input)
+    {
+    case KEY_UP:
+            ch = 'U';
+        break;
+    case KEY_DOWN:
+        ch = 'D';
+        break;
+    case KEY_LEFT:
+        ch = 'L';
+        break;
+    case KEY_RIGHT:
+        ch = 'R';
+        break;
+    default:
+        ch = ' ';
+        break;
+    }
 
-                return ch;
-            }
-    };
+    return ch;
 }
-
-
-#endif /* INPUTMANAGER */
