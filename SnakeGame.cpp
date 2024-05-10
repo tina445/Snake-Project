@@ -9,20 +9,15 @@ unsigned int tick; // 시간 경과 기록 (앞서 설정한 tick 단위)
 int score; // 점수
 bool isOver{false}; // 게임 오버 여부 check
 
-void Snake::Dead() { isOver = true; }
+void Snake::Dead() { isOver = true; } // 게임 오버 처리
 
 int SnakeGame() {
     // Start()
     tick = 0;
 
-    GameMap map;
     InputManager key_input;
+    GameMap map{STARTPOS, SNAKE_DEFAULT};
     Snake snake{{STARTPOS, STARTPOS}, SNAKE_DEFAULT};
-
-    map.map[STARTPOS][STARTPOS] = HEAD;
-    for (int i = 1; i < SNAKE_DEFAULT; i++) {
-        map.map[STARTPOS][STARTPOS + i] = BODY;
-    }
 
     char key;
 

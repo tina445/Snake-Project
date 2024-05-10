@@ -7,7 +7,7 @@ using namespace std;
 #define MAPSIZE 21 // game map의 사이즈 (n * n)
 
 // 빈 공간 0 벽 1 모서리 2 스네이크 body 3 head 4 아이템 + 5 - 6 게이트 입구 7 출구 8
-GameMap::GameMap() {
+GameMap::GameMap(int startpos, int snakeSize) {
     vector<int> tmp; // map에 넣을 임시 1차원 벡터 (empty vector)
 
     for (int i = 0; i < MAPSIZE; i++) {
@@ -23,7 +23,11 @@ GameMap::GameMap() {
                     map[i].push_back(0); // 빈 공간
         }
     }
-    start_color();
+
+    map[startpos][startpos] = 4; // snake head;
+    for (int i = 1; i < snakeSize; i++) {
+        map[startpos][startpos + i] = 3; //snake body
+    }
 
     // 색상 정의
     init_color(green, 700, 1000, 700);
@@ -41,6 +45,8 @@ GameMap::GameMap() {
     init_pair(body, COLOR_BLACK, lightblue);
     init_pair(head, COLOR_BLACK, blue);
 }
+
+GameMap::GameMap() {}
 
 void GameMap::printMap() { // map 출력
     move(1, 0);

@@ -6,6 +6,7 @@
 
 class GameMap{
     public:
+        GameMap(int startpos, int snakeSize);
         GameMap();
         void printMap();
     public:
