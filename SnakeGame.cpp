@@ -53,6 +53,7 @@ int main(int agrc, char *argv[]) {
     noecho();
     nodelay(stdscr, true);
     keypad(stdscr, true);
+    start_color();
     curs_set(0);
 
     // Update()
