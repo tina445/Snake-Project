@@ -40,30 +40,30 @@ void Snake::moveSnake(vector<vector<int>> &map, char input)
 	}
 
 	// snake 좌표 -> map 매핑
-	map[head.first][head.second] = HEAD;
-	map[body.front().first][body.front().second] = BODY; // snake head가 있던 위치에 body 삽입
-	map[body.back().first][body.back().second] = 0; // snake tail(body deque의 맨 끝 index)좌표를 빈 공간으로 대체
+	map[head.first][head.second] = HEAD; // 변경된 head 좌표를 map에 매핑
+	map[body.front().first][body.front().second] = BODY; // snake head가 있던 위치에 body 배치
+	map[body.back().first][body.back().second] = 0; // snake tail(body deque의 back index)좌표를 빈 공간으로 대체
 
 	body.pop_back();
 }
 
 void Snake::turnSnake(char key_input)
 {
+	DIR prev = dir;
+
 	if (key_input == 'L') { //왼쪽 방향키 입력
-		if (dir == RIGHT) Dead();
 		dir = LEFT;
 	}
 	else if (key_input == 'R') { // 오른쪽 방향키 입력
-		if (dir == LEFT) Dead();
 		dir = RIGHT;
 	}
 	else if (key_input == 'U') { // 위쪽 방향키 입력
-		if (dir == DOWN) Dead();
 		dir = UP;
 	}
 	else if (key_input == 'D') { // 아래쪽 방향키 입력
-		if (dir == UP) Dead();
 		dir = DOWN;
 	}
 	else return;
+
+	if ((dir + 2) % 4 == prev ) Dead(); // 진행 방향과 반대 방향을 입력하면 게임 오버
 }
