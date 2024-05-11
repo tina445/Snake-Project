@@ -1,6 +1,7 @@
 #include "GameMap.h"
 #include "InputManager.h"
 #include "Snake.h"
+#include "ItemManager.h"
 #include <ncurses.h>
 
 #define TICKSPEED 2 // tick per second
@@ -14,7 +15,6 @@ void Snake::Dead() { isOver = true; } // 게임 오버 처리
 int SnakeGame() {
     // Start()
     tick = 0;
-
     InputManager key_input;
     GameMap map{STARTPOS, SNAKE_DEFAULT};
     Snake snake{{STARTPOS, STARTPOS}, SNAKE_DEFAULT};
@@ -24,9 +24,12 @@ int SnakeGame() {
     // Update()
     while (1) {
         tick++;
+        itemManager::instance().spawnItem(map.map, tick); // 아이템 생성 로직에 따라 아이템 생성 시도
+        itemManager::instance().destroyItem(map.map, tick); // 아이템 수명에 따라 아이템 삭제 시도
         key = key_input.keyDown(); // 방향키 입력 처리
 
         snake.moveSnake(map.map, key); // snake 이동 처리
+        if (snake.getSize() < 3) snake.Dead(); // snake 길이가 3보다 작으면 게임 오버
 
         map.printMap();
 
@@ -34,8 +37,9 @@ int SnakeGame() {
         mvprintw(0, 5, "input: %c", key);
         delch();
         refresh();
+        
 
-        if (tick > 200 || isOver) break;
+        if (tick > 1000 || isOver) break;
         napms(1000 / TICKSPEED);
     }
     
