@@ -25,7 +25,28 @@ void itemManager::spawnItem(std::vector<std::vector<int>> &map, int tick)
 void itemManager::destroyItem(int curTime)
 {
     for (int i = 0; i < MAXITEM; i++)
+    {
         if (itemArr[i]->getDuration() >= curTime)
+        {
             delete itemArr[i];
+            itemNum--;
+            break;
+        }
+    }
 
+}
+
+void itemManager::destroyItem(std::pair<int, int> pos)
+{
+    for (int i = 0; i < MAXITEM; i++)
+    {
+        if (itemArr[i]->getPosition() == pos)
+        {
+            delete itemArr[i];
+            itemNum--;
+            break;
+        }
+        
+    }
+    
 }

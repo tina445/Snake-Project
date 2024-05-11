@@ -9,6 +9,7 @@ class item
 
         void settingItem();
         int getDuration() { return duration; }
+        std::pair<int, int> getPosition() {return pos; }
     private:
         int spawnTime = 0;
         std::vector<std::vector<int>> &map;

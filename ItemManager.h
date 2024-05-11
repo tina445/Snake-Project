@@ -12,6 +12,7 @@ class itemManager
 
         void spawnItem(std::vector<std::vector<int>> &map, int tick);
         void destroyItem(int curTime);
+        void destroyItem(std::pair<int, int> pos);
         int getItemNum() { return itemNum; }
 
     private:

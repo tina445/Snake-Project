@@ -23,8 +23,6 @@ class Snake {
         void snakeLocate(std::vector<std::vector<int>> &map);
         void Collidable(std::vector<std::vector<int>> &map);
         void Dead();
-        void Growth();
-        void Posion();
 
     public:
         enum DIR
@@ -35,6 +33,11 @@ class Snake {
         std::pair<int, int> head;
         DIR dir = LEFT; //��Ӹ� �ڵ� �̵� ����
         int snakeLength;
-
+    private:
+        enum STATE
+        {
+            NONE, GROW, GROWLESS
+        };
+        STATE state = NONE;
     };
 #endif /* SNAKE */
