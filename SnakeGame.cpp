@@ -2,6 +2,7 @@
 #include "InputManager.h"
 #include "Snake.h"
 #include "ItemManager.h"
+#include "objectid.h"
 #include <ncurses.h>
 
 #define TICKSPEED 2 // tick per second
@@ -32,12 +33,10 @@ int SnakeGame() {
         if (snake.getSize() < 3) snake.Dead(); // snake 길이가 3보다 작으면 게임 오버
 
         map.printMap();
-
         mvprintw(0, 0, "%u", tick);
         mvprintw(0, 5, "input: %c", key);
         delch();
         refresh();
-        
 
         if (tick > 1000 || isOver) break;
         napms(1000 / TICKSPEED);

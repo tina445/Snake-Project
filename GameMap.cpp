@@ -1,6 +1,7 @@
 #include <ncurses.h>
 #include <vector>
 #include "GameMap.h"
+#include "objectid.h"
 
 using namespace std;
 
@@ -14,18 +15,18 @@ GameMap::GameMap(int startpos, int snakeSize) {
         for (int j = 0; j < MAPSIZE; j++) {
             if (i == 0 || j == 0 || i == MAPSIZE-1 || j == MAPSIZE-1) {
                 if (i == j || (i == 0 && j == MAPSIZE-1 ) || (i == MAPSIZE-1 && j == 0)) 
-                    map[i].push_back(2); // 모서리 (대체 불가능한 벽)
+                    map[i].push_back(OBJECTID::Iwall); // 모서리 (대체 불가능한 벽)
                 else 
-                    map[i].push_back(1); // 일반 벽 object
+                    map[i].push_back(OBJECTID::wall); // 일반 벽 object
             }
                 else 
-                    map[i].push_back(0); // 빈 공간
+                    map[i].push_back(OBJECTID::wall); // 빈 공간
         }
     }
 
-    map[startpos][startpos] = 4; // snake head;
+    map[startpos][startpos] = OBJECTID::head; // snake head;
     for (int i = 1; i < snakeSize; i++) {
-        map[startpos][startpos + i] = 3; //snake body
+        map[startpos][startpos + i] = OBJECTID::body; //snake body
     }
 
     // 색상 정의

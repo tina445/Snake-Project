@@ -3,6 +3,7 @@
 #include <iostream>
 #include "Snake.h"
 #include "ItemManager.h"
+#include "objectid.h"
 
 using namespace std;
 
@@ -43,20 +44,20 @@ void Snake::moveSnake(vector<vector<int>> &map, char input)
 	Collidable(map); // 충돌 판단
 
 	// snake 좌표 -> map 매핑
-	map[head.first][head.second] = HEAD; // 변경된 head 좌표를 map에 매핑
+	map[head.first][head.second] = OBJECTID::head; // 변경된 head 좌표를 map에 매핑
 
 	switch (state)
 	{
 	case NONE:
-		map[body.front().first][body.front().second] = BODY; // snake head가 있던 위치에 body 배치
+		map[body.front().first][body.front().second] = OBJECTID::body; // snake head가 있던 위치에 body 배치
 		map[body.back().first][body.back().second] = 0; // snake tail(body deque의 back index)좌표를 빈 공간으로 대체
 		body.pop_back();
 		break;
 	case GROW:
-		map[body.front().first][body.front().second] = BODY; // 진행방향으로 snake tail(body deque의 back index)를 유지
+		map[body.front().first][body.front().second] = OBJECTID::body; // 진행방향으로 snake tail(body deque의 back index)를 유지
 		break;
 	case GROWLESS:
-		map[body.front().first][body.front().second] = BODY;
+		map[body.front().first][body.front().second] = OBJECTID::body;
 		map[body.back().first][body.back().second] = 0; 
 		body.pop_back(); // 첫번째 실행은 이동 처리
 		map[body.back().first][body.back().second] = 0; 
@@ -67,14 +68,14 @@ void Snake::moveSnake(vector<vector<int>> &map, char input)
 
 void Snake::Collidable(std::vector<std::vector<int>> &map)
 {
-	if (map[head.first][head.second] == 1 || map[head.first][head.second] == 2 || map[head.first][head.second] == BODY) // 벽 또는 자신의 몸통에 충돌하면 게임 오버
+	if (map[head.first][head.second] == wall || map[head.first][head.second] == Iwall || map[head.first][head.second] == OBJECTID::body) // 벽 또는 자신의 몸통에 충돌하면 게임 오버
 		Dead();
-	else if (map[head.first][head.second] == 5) //성장 아이템 충돌
+	else if (map[head.first][head.second] == growth) //성장 아이템 충돌
 	{
 		itemManager::instance().destroyItem(map, {head.first, head.second});
 		state = GROW;
 	}
-	else if (map[head.first][head.second] == 6) //독성 아이템 충돌
+	else if (map[head.first][head.second] == poison) //독성 아이템 충돌
 	{
 		itemManager::instance().destroyItem(map, {head.first, head.second});
 		state = GROWLESS;

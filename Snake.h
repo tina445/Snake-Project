@@ -9,9 +9,6 @@
 #define STARTPOS 9 // 시작시 snake head가 위치할 좌표
 #define SNAKE_DEFAULT 3 // snake의 기본 사이즈
 
-#define BODY 3 // snake body id
-#define HEAD 4 // snake head id
-
 class Snake {
     public:
         Snake(std::pair<int, int> headPos, int sizeDefault);

@@ -1,4 +1,5 @@
 #include "Item.h"
+#include "objectid.h"
 #include <stdlib.h>
 #include <time.h>
 
@@ -24,9 +25,9 @@ void item::settingItem()
 
         // 맵 매핑
         if (isGrowth)
-            map[y][x] = 5;
+            map[y][x] = growth;
         else
-            map[y][x] = 6;
+            map[y][x] = poison;
 
         pos = {y, x};
         duration = spawnTime + DURATION;
