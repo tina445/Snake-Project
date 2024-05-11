@@ -13,8 +13,6 @@ Snake::Snake(pair<int, int> headPos, int sizeDefault)
 	for (int i = 1; i < sizeDefault; i++) { // snake body init
 		Snake::body.push_back({ headPos.first, headPos.second + i});
 	}
-
-	snakeLength = SNAKE_DEFAULT; // 스네이크의 길이
 }
 
 Snake::Snake() {}
@@ -43,8 +41,8 @@ void Snake::moveSnake(vector<vector<int>> &map, char input)
 	}
 
 	Collidable(map); // 충돌 판단
-	// snake 좌표 -> map 매핑
 
+	// snake 좌표 -> map 매핑
 	map[head.first][head.second] = HEAD; // 변경된 head 좌표를 map에 매핑
 
 	switch (state)
@@ -55,31 +53,30 @@ void Snake::moveSnake(vector<vector<int>> &map, char input)
 		body.pop_back();
 		break;
 	case GROW:
-		map[body.front().first][body.front().second] = BODY;
+		map[body.front().first][body.front().second] = BODY; // 진행방향으로 snake tail(body deque의 back index)를 유지
 		break;
 	case GROWLESS:
 		map[body.front().first][body.front().second] = BODY;
 		map[body.back().first][body.back().second] = 0; 
-		body.pop_back();
+		body.pop_back(); // 첫번째 실행은 이동 처리
 		map[body.back().first][body.back().second] = 0; 
-		body.pop_back();
+		body.pop_back(); // 두번째 실행은 snake tail 삭제
 		break;
 	}
-	
 }
 
 void Snake::Collidable(std::vector<std::vector<int>> &map)
 {
-	if (map[head.first][head.second] == 1 || map[head.first][head.second] == 2)
+	if (map[head.first][head.second] == 1 || map[head.first][head.second] == 2 || map[head.first][head.second] == BODY) // 벽 또는 자신의 몸통에 충돌하면 게임 오버
 		Dead();
 	else if (map[head.first][head.second] == 5) //성장 아이템 충돌
 	{
-		itemManager::instance().destroyItem({head.first, head.second});
+		itemManager::instance().destroyItem(map, {head.first, head.second});
 		state = GROW;
 	}
 	else if (map[head.first][head.second] == 6) //독성 아이템 충돌
 	{
-		itemManager::instance().destroyItem({head.first, head.second});
+		itemManager::instance().destroyItem(map, {head.first, head.second});
 		state = GROWLESS;
 	}
 		
@@ -104,4 +101,8 @@ void Snake::turnSnake(char key_input)
 	else return;
 
 	if ((dir + 2) % 4 == prev ) Dead(); // 진행 방향과 반대 방향을 입력하면 게임 오버
+}
+
+int Snake::getSize() {
+	return body.size() + 1;
 }

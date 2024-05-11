@@ -2,12 +2,11 @@
 #ifndef SNAKE
 #define SNAKE
 
-#pragma once
 #include "GameMap.h"
 #include <deque>
 #include <vector>
 
-#define STARTPOS 10 // 시작시 snake head가 위치할 좌표
+#define STARTPOS 9 // 시작시 snake head가 위치할 좌표
 #define SNAKE_DEFAULT 3 // snake의 기본 사이즈
 
 #define BODY 3 // snake body id
@@ -22,22 +21,25 @@ class Snake {
         void turnSnake(char key_input);
         void snakeLocate(std::vector<std::vector<int>> &map);
         void Collidable(std::vector<std::vector<int>> &map);
+        int getSize();
         void Dead();
 
     public:
-        enum DIR
+        enum DIR // 진행방향
         {
             UP, RIGHT, DOWN, LEFT
         };
+        
+        DIR dir = LEFT; //��Ӹ� �ڵ� �̵� ����
+    private:
         std::deque<std::pair<int, int>> body;
         std::pair<int, int> head;
-        DIR dir = LEFT; //��Ӹ� �ڵ� �̵� ����
-        int snakeLength;
-    private:
-        enum STATE
+
+        enum STATE // 스네이크 상태 (다른 오브젝트와의 상호작용)
         {
-            NONE, GROW, GROWLESS
+            NONE, GROW, GROWLESS // NONE: 상호작용하지 않은 상태 GROW: growth 아이템 획득 상태 GROWLESS: poison 아이템 획득 상태
         };
         STATE state = NONE;
+        
     };
 #endif /* SNAKE */
