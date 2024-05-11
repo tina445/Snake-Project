@@ -20,7 +20,7 @@ GameMap::GameMap(int startpos, int snakeSize) {
                     map[i].push_back(OBJECTID::wall); // 일반 벽 object
             }
                 else 
-                    map[i].push_back(OBJECTID::wall); // 빈 공간
+                    map[i].push_back(OBJECTID::space); // 빈 공간
         }
     }
 

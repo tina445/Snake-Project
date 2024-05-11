@@ -2,7 +2,6 @@
 #include "InputManager.h"
 #include "Snake.h"
 #include "ItemManager.h"
-#include "objectid.h"
 #include <ncurses.h>
 
 #define TICKSPEED 2 // tick per second
