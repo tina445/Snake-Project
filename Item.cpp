@@ -2,36 +2,34 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define MAPSIZE 21
-
 item::item(std::vector<std::vector<int>> &map, int tick) : map(map), spawnTime(tick)
 {
     settingItem();
 }
 
-item::~item()
-{
-    map[pos.first][pos.second] = 0;
-}
+item::~item() {}
 
 void item::settingItem()
 {
     srand(time(NULL));
-    isGrowth = rand()%2;
+    isGrowth = rand() % 2;
     while (1)
-    {
-        int x = (rand() % MAPSIZE-1) + 1;
-        int y = (rand() % MAPSIZE-1) + 1;
-        if (map[x][y] != 0)
+    {   
+        // 아이템의 좌표 지정
+        int x = (rand() % map[0].size()-1) + 1;
+        int y = (rand() % map.size()-1) + 1;
+
+        if (map[y][x] != 0)
             continue;
 
+        // 맵 매핑
         if (isGrowth)
-            map[x][y] = 5;
+            map[y][x] = 5;
         else
-            map[x][y] = 6;
+            map[y][x] = 6;
 
-        pos = {x,y};
-        duration = DURATION + spawnTime;
+        pos = {y, x};
+        duration = spawnTime + DURATION;
         break;
     }
 }
