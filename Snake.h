@@ -21,7 +21,10 @@ class Snake {
         void moveSnake(std::vector<std::vector<int>> &map, char input);
         void turnSnake(char key_input);
         void snakeLocate(std::vector<std::vector<int>> &map);
+        void Collidable(std::vector<std::vector<int>> &map);
         void Dead();
+        void Growth();
+        void Posion();
 
     public:
         enum DIR
@@ -32,5 +35,6 @@ class Snake {
         std::pair<int, int> head;
         DIR dir = LEFT; //��Ӹ� �ڵ� �̵� ����
         int snakeLength;
+
     };
 #endif /* SNAKE */

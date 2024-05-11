@@ -39,12 +39,23 @@ void Snake::moveSnake(vector<vector<int>> &map, char input)
 		break;
 	}
 
+	Collidable(map); // 충돌 판단
 	// snake 좌표 -> map 매핑
+
 	map[head.first][head.second] = HEAD; // 변경된 head 좌표를 map에 매핑
 	map[body.front().first][body.front().second] = BODY; // snake head가 있던 위치에 body 배치
 	map[body.back().first][body.back().second] = 0; // snake tail(body deque의 back index)좌표를 빈 공간으로 대체
 
 	body.pop_back();
+}
+
+void Snake::Collidable(std::vector<std::vector<int>> &map)
+{
+	if (map[head.first][head.second] == 1 || map[head.first][head.second] == 2)
+	{
+		Dead();
+	}
+		
 }
 
 void Snake::turnSnake(char key_input)

@@ -56,5 +56,6 @@ int main(int agrc, char *argv[]) {
         int x = SnakeGame();
         if (x == -1) break;
     }
+    mvprintw(0, MAPSIZE, "gameover");
     endwin();
 }
