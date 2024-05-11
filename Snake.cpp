@@ -2,6 +2,8 @@
 
 #include <iostream>
 #include "Snake.h"
+#include "ItemManager.h"
+
 using namespace std;
 
 Snake::Snake(pair<int, int> headPos, int sizeDefault)
@@ -19,6 +21,7 @@ Snake::Snake() {}
 
 void Snake::moveSnake(vector<vector<int>> &map, char input)
 {
+	state = NONE; //뱀 성장, 축소, 유지 상태 판단
 	turnSnake(input); // 방향키 입력을 받아 snake의 진행 방향 변경
 
 	body.push_front(head); // snake head가 있던 위치에 body 삽입
@@ -39,12 +42,47 @@ void Snake::moveSnake(vector<vector<int>> &map, char input)
 		break;
 	}
 
+	Collidable(map); // 충돌 판단
 	// snake 좌표 -> map 매핑
-	map[head.first][head.second] = HEAD; // 변경된 head 좌표를 map에 매핑
-	map[body.front().first][body.front().second] = BODY; // snake head가 있던 위치에 body 배치
-	map[body.back().first][body.back().second] = 0; // snake tail(body deque의 back index)좌표를 빈 공간으로 대체
 
-	body.pop_back();
+	map[head.first][head.second] = HEAD; // 변경된 head 좌표를 map에 매핑
+
+	switch (state)
+	{
+	case NONE:
+		map[body.front().first][body.front().second] = BODY; // snake head가 있던 위치에 body 배치
+		map[body.back().first][body.back().second] = 0; // snake tail(body deque의 back index)좌표를 빈 공간으로 대체
+		body.pop_back();
+		break;
+	case GROW:
+		map[body.front().first][body.front().second] = BODY;
+		break;
+	case GROWLESS:
+		map[body.front().first][body.front().second] = BODY;
+		map[body.back().first][body.back().second] = 0; 
+		body.pop_back();
+		map[body.back().first][body.back().second] = 0; 
+		body.pop_back();
+		break;
+	}
+	
+}
+
+void Snake::Collidable(std::vector<std::vector<int>> &map)
+{
+	if (map[head.first][head.second] == 1 || map[head.first][head.second] == 2)
+		Dead();
+	else if (map[head.first][head.second] == 5) //성장 아이템 충돌
+	{
+		itemManager::instance().destroyItem({head.first, head.second});
+		state = GROW;
+	}
+	else if (map[head.first][head.second] == 6) //독성 아이템 충돌
+	{
+		itemManager::instance().destroyItem({head.first, head.second});
+		state = GROWLESS;
+	}
+		
 }
 
 void Snake::turnSnake(char key_input)

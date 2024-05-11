@@ -4,6 +4,8 @@
 #include <ncurses.h>
 #include <vector>
 
+#define MAPSIZE 21
+
 class GameMap{
     public:
         GameMap(int startpos, int snakeSize);
