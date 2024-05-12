@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string>
 #include <fstream>
+#include <stdlib.h>
 #include "GameMap.h"
 #include "objectid.h"
 
@@ -11,27 +12,8 @@ using namespace std;
 
 #define MAPSIZE 21 // game map의 사이즈 (n * n)
 
-GameMap::GameMap(int startpos, int snakeSize) {
-    vector<int> tmp; // map에 넣을 임시 1차원 벡터 (empty vector)
-
-    for (int i = 0; i < MAPSIZE; i++) {
-        map.push_back(tmp);
-        for (int j = 0; j < MAPSIZE; j++) {
-            if (i == 0 || j == 0 || i == MAPSIZE-1 || j == MAPSIZE-1) {
-                if (i == j || (i == 0 && j == MAPSIZE-1 ) || (i == MAPSIZE-1 && j == 0)) 
-                    map[i].push_back(OBJECTID::Iwall); // 모서리 (대체 불가능한 벽)
-                else 
-                    map[i].push_back(OBJECTID::wall); // 일반 벽 object
-            }
-                else 
-                    map[i].push_back(OBJECTID::space); // 빈 공간
-        }
-    }
-
-    map[startpos][startpos] = OBJECTID::head; // snake head;
-    for (int i = 1; i < snakeSize; i++) {
-        map[startpos][startpos + i] = OBJECTID::body; //snake body
-    }
+GameMap::GameMap(int stage) {
+    createMap(stage); // 스테이지에 해당하는 맵 생성
 
     // 색상 정의
     init_color(green, 700, 1000, 700);
@@ -55,7 +37,7 @@ GameMap::GameMap(int startpos, int snakeSize) {
 }
 
 GameMap::GameMap() {
-    createMap(); // 스테이지에 해당하는 맵 생성
+    createMap(1); // 스테이지에 해당하는 맵 생성(기본값: 1)
 
     // 색상 정의
     init_color(green, 700, 1000, 700);
@@ -78,9 +60,9 @@ GameMap::GameMap() {
     init_pair(poison, COLOR_BLACK, purple);
 }
 
-void GameMap::createMap() {
+void GameMap::createMap(int stage) {
     ifstream readfile;
-    readfile.open("stage/world2-1.map"); // 맵에 대한 정보가 담긴 파일 열기
+    readfile.open(selectMap(stage)); // 맵에 대한 정보가 담긴 파일 열기 (ex: stage/world1.map)
 
     vector<int> tmp; // map에 넣을 임시 1차원 벡터 (empty vector)
     string line; // 한 행에 대한 정보를 담을 임시 문자열
@@ -116,4 +98,11 @@ int GameMap::ySize() { // 맵의 세로 길이 반환
 
 int GameMap::xSize() { // 맵의 가로 길이 반환
     return map[0].size();
+}
+
+const char* GameMap::selectMap(int stage) { // 스테이지에 해당하는 맵들중 하나를 고름
+    srand(time(NULL));
+    int i{rand() % static_cast<int>(mapList[stage - 1].size())}; // 맵 번호 인덱스를 랜덤으로 설정
+
+    return mapList[stage - 1][i].c_str(); // string을 fstream.open()에 사용 가능한 형식인 const char*로 변환
 }
