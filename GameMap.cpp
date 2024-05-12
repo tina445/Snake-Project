@@ -2,6 +2,8 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <string>
+#include <fstream>
 #include "GameMap.h"
 #include "objectid.h"
 

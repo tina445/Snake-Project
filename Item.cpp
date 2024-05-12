@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-item::item(std::vector<std::vector<int>> &map, int tick) : map(map), spawnTime(tick)
+item::item(std::vector<std::vector<int>> &map, int &tick) : map(map), spawnTime(tick)
 {
     settingItem();
 }

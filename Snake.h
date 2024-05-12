@@ -2,11 +2,9 @@
 #ifndef SNAKE
 #define SNAKE
 
-#include "GameMap.h"
 #include <deque>
 #include <vector>
 
-#define STARTPOS 9 // 시작시 snake head가 위치할 좌표
 #define SNAKE_DEFAULT 3 // snake의 기본 사이즈
 
 class Snake {
@@ -29,6 +27,7 @@ class Snake {
         
         DIR dir = LEFT; //��Ӹ� �ڵ� �̵� ����
     private:
+        int growCount{}, poisonCount{};
         std::deque<std::pair<int, int>> body;
         std::pair<int, int> head;
 

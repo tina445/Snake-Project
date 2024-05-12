@@ -16,6 +16,11 @@ class GameMap{
     private:
         void createMap();
 
+        int ySize();
+        int xSize();
+    private:
+        void createMap();
+
     public:
         std::vector<std::vector<int>> map;
     private:

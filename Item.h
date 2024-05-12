@@ -1,10 +1,10 @@
 #include <vector>
-#define DURATION 14 // 아이템 유지 시간(tick)
+#define DURATION 18 // 아이템 유지 시간(tick)
 
 class item
 {
     public:
-        item(std::vector<std::vector<int>> &map, int tick);
+        item(std::vector<std::vector<int>> &map, int &tick);
         ~item();
 
         void settingItem();
