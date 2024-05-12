@@ -11,9 +11,13 @@ class GameMap{
         GameMap(int startpos, int snakeSize);
         GameMap();
         void printMap();
+        int ySize();
+        int xSize();
+    private:
+        void createMap();
+
     public:
         std::vector<std::vector<int>> map;
-    
     private:
         // 색상 팔레트 번호
         // 빈 공간(흰색): 1 빈 공간(격자): 2 벽: 3 모서리: 4 스네이크: body 5, head 6 아이템: + 7, - 8 게이트: 9
