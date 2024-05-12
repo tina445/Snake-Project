@@ -1,3 +1,9 @@
+#ncurses 폴더
 ncurses*/
 
+#에디터 설정 폴더
 .vscode
+.vscode/
+
+#실행 파일
+game
