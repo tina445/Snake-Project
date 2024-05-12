@@ -16,8 +16,8 @@ int SnakeGame() {
     // Start()
     tick = 0;
     InputManager key_input;
-    GameMap map{STARTPOS, SNAKE_DEFAULT};
-    Snake snake{{STARTPOS, STARTPOS}, SNAKE_DEFAULT};
+    GameMap map;
+    Snake snake{{map.ySize() / 2, (map.xSize() / 2)}, SNAKE_DEFAULT};
 
     char key;
 
