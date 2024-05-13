@@ -9,16 +9,39 @@
 unsigned int tick; // 시간 경과 기록 (앞서 설정한 tick 단위)
 int stage; // 현재 스테이지
 bool isOver{false}; // 게임 오버 여부 check
+WINDOW *scoreboard;
 
-void Snake::Dead() { isOver = true; } // 게임 오버 처리
+int snakeGame();
 
-int SnakeGame() {
+int main(int agrc, char *argv[]) {
+    // Strat()
+    initscr();
+    noecho();
+    nodelay(stdscr, true);
+    keypad(stdscr, true);
+    start_color();
+    curs_set(0);
+    
+    // Update()
+    while (1) {
+        int x = snakeGame();
+        if (x == -1) break;
+    }
+
+    endwin();
+}
+
+int snakeGame() {
     // Start()
     tick = 0;
     InputManager key_input;
     GameMap map;
     Snake snake{{map.ySize() / 2, map.xSize() / 2}, SNAKE_DEFAULT};
 
+    scoreboard = newwin(10, 60, 3, (map.xSize() + 1) * 4);
+    wattron(scoreboard, COLOR_PAIR(2));
+    wbkgd(scoreboard, COLOR_PAIR(2));
+    
     char key;
 
     // Update()
@@ -32,29 +55,22 @@ int SnakeGame() {
         if (snake.getSize() < 3) snake.Dead(); // snake 길이가 3보다 작으면 게임 오버
 
         map.printMap();
-        refresh();
 
-        if (isOver) break;
+        box(scoreboard, 0, 0);
+        mvwprintw(scoreboard, 5, 1, "time: %d : %d", (tick / TICKSPEED) / 60, (tick / TICKSPEED) % 60);
+        
+        refresh();
+        wrefresh(scoreboard);
+        touchwin(stdscr);
+
+        if (isOver) {
+            delwin(scoreboard);
+            break;
+        }
         napms(1000 / TICKSPEED);
     }
     
     return -1;
 }
 
-int main(int agrc, char *argv[]) {
-    // Strat()
-    initscr();
-    noecho();
-    nodelay(stdscr, true);
-    keypad(stdscr, true);
-    start_color();
-    curs_set(0);
-
-    // Update()
-    while (1) {
-        int x = SnakeGame();
-        if (x == -1) break;
-    }
-
-    endwin();
-}
+void Snake::Dead() { isOver = true; } // 게임 오버 처리

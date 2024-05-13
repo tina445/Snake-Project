@@ -5,8 +5,6 @@
 #include <vector>
 #include <string>
 
-#define MAPSIZE 21
-
 class GameMap{
     public:
         GameMap(int stage);

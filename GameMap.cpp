@@ -8,8 +8,6 @@
 
 using namespace std;
 
-#define MAPSIZE 21 // game map의 사이즈 (n * n)
-
 GameMap::GameMap(int stage) {
     createMap(stage); // 스테이지에 해당하는 맵 생성
 
@@ -56,6 +54,7 @@ GameMap::GameMap() {
     init_pair(head, COLOR_BLACK, blue);
     init_pair(growth, COLOR_BLACK, red);
     init_pair(poison, COLOR_BLACK, purple);
+    init_pair(gate, COLOR_BLACK, COLOR_MAGENTA);
 }
 
 void GameMap::createMap(int stage) {
@@ -80,11 +79,10 @@ void GameMap::createMap(int stage) {
 }
 
 void GameMap::printMap() { // map 출력
-    move(1, 0);
-    for (int y = 0; y < MAPSIZE; y++) {
-        for (int x = 0; x < MAPSIZE; x++) {
-            if (map[y][x] == 0) mvaddch(y+1, x * 4, '\t' | COLOR_PAIR(((y + x) % 2) + 1)); 
-            else mvaddch(y+1, x * 4, '\t' | COLOR_PAIR(map[y][x] + 2)); 
+    for (int y = 0; y < ySize(); y++) {
+        for (int x = 0; x < xSize(); x++) {
+            if (map[y][x] == 0) mvaddch(y, x * 4, '\t' | COLOR_PAIR(((y + x) % 2) + 1)); 
+            else mvaddch(y, x * 4, '\t' | COLOR_PAIR(map[y][x] + 2)); 
         }
         printw("\b\b\b\b\n");
     }
