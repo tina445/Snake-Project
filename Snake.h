@@ -17,6 +17,7 @@ class Snake {
         void snakeLocate(std::vector<std::vector<int>> &map);
         void Collidable(std::vector<std::vector<int>> &map);
         int getSize();
+        int getitemCount(int s = 0);
         void Dead();
 
     public:

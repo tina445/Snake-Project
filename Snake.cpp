@@ -106,3 +106,9 @@ void Snake::turnSnake(char key_input)
 int Snake::getSize() {
 	return body.size() + 1;
 }
+
+int Snake::getitemCount(int s) {
+	if (s) return growCount;
+
+	return poisonCount;
+}
