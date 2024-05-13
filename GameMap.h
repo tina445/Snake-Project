@@ -1,11 +1,8 @@
 #ifndef GAMEMAP
 #define GAMEMAP
 
-#include <ncurses.h>
 #include <vector>
 #include <string>
-
-#define MAPSIZE 21
 
 class GameMap{
     public:

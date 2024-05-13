@@ -6,8 +6,6 @@
 
 using namespace std;
 
-#define MAPSIZE 21 // game map의 사이즈 (n * n)
-
 GameMap::GameMap(int stage) {
     createMap(stage); // 스테이지에 해당하는 맵 생성
 
@@ -79,8 +77,8 @@ void GameMap::createMap(int stage) {
 
 void GameMap::printMap() { // map 출력
     move(1, 0);
-    for (int y = 0; y < MAPSIZE; y++) {
-        for (int x = 0; x < MAPSIZE; x++) {
+    for (int y = 0; y < ySize(); y++) {
+        for (int x = 0; x < xSize(); x++) {
             if (map[y][x] == 0) mvaddch(y+1, x * 4, '\t' | COLOR_PAIR(((y + x) % 2) + 1)); 
             else mvaddch(y+1, x * 4, '\t' | COLOR_PAIR(map[y][x] + 2)); 
         }
@@ -98,7 +96,7 @@ int GameMap::xSize() { // 맵의 가로 길이 반환
 
 const char* GameMap::selectMap(int stage) { // 스테이지에 해당하는 맵들중 하나를 고름
     srand(time(NULL));
-    int i{rand() % static_cast<int>(mapList[stage - 1].size())}; // 맵 번호 인덱스를 랜덤으로 설정
+    unsigned int i{rand() % mapList[stage - 1].size()}; // 맵 번호 인덱스를 랜덤으로 설정
 
     return mapList[stage - 1][i].c_str(); // string을 fstream.open()에 사용 가능한 형식인 const char*로 변환
 }

@@ -2,7 +2,6 @@
 #ifndef SNAKE
 #define SNAKE
 
-#include "GameMap.h"
 #include <deque>
 #include <vector>
 
@@ -28,6 +27,7 @@ class Snake {
         
         DIR dir = LEFT; //��Ӹ� �ڵ� �̵� ����
     private:
+        int growCount{}, poisonCount{};
         std::deque<std::pair<int, int>> body;
         std::pair<int, int> head;
 

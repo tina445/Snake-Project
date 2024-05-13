@@ -1,4 +1,5 @@
 #include "ItemManager.h"
+#include "objectid.h"
 #include <stdlib.h>
 #include <time.h>
 #include <ncurses.h>
@@ -21,7 +22,7 @@ void itemManager::destroyItem(std::vector<std::vector<int>> &map, int curTime) /
 {
     for (std::list<item*>::iterator iter = itemArr.begin(); iter != itemArr.end(); ++iter) { // 아이템의 최대 수명 틱보다 현재 틱이 커지면 삭제
         if ((*iter)->getDuration() <= curTime) {
-            map[(*iter)->getPosition().first][(*iter)->getPosition().second] = 0; // map 매핑 -> 아이템이 사라졌기 때문에 0
+            map[(*iter)->getPosition().first][(*iter)->getPosition().second] = space; // map 매핑 -> 아이템이 사라졌기 때문에 0
 
             delete *iter; // 메모리 할당 해제
             itemArr.erase(iter); // 소멸한 아이템의 정보를 아이템 리스트에서 삭제
@@ -34,7 +35,7 @@ void itemManager::destroyItem(std::vector<std::vector<int>> &map, std::pair<int,
 {
     for (std::list<item*>::iterator iter = itemArr.begin(); iter != itemArr.end(); ++iter) {
         if ((*iter)->getPosition() == pos) {
-            map[(*iter)->getPosition().first][(*iter)->getPosition().second] = 0; // map 매핑 -> 아이템이 사라졌기 때문에 0
+            map[(*iter)->getPosition().first][(*iter)->getPosition().second] = space; // map 매핑 -> 아이템이 사라졌기 때문에 0
 
             delete *iter; // 메모리 할당 해제
             itemArr.erase(iter); // 소멸한 아이템의 정보를 아이템 리스트에서 삭제
