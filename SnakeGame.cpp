@@ -13,6 +13,10 @@ WINDOW *scoreboard;
 
 int snakeGame();
 
+WINDOW* initScoreboard(int x, int y);
+
+void printScoreboard(int curlen, int maxlen, int growcount, int poisoncount, int tick);
+
 int main(int agrc, char *argv[]) {
     // Strat()
     initscr();
@@ -38,9 +42,9 @@ int snakeGame() {
     GameMap map;
     Snake snake{{map.ySize() / 2, map.xSize() / 2}, SNAKE_DEFAULT};
 
-    scoreboard = newwin(10, 60, 3, (map.xSize() + 1) * 4);
-    wattron(scoreboard, COLOR_PAIR(2));
-    wbkgd(scoreboard, COLOR_PAIR(2));
+    scoreboard = initScoreboard(2, (map.xSize() + 1) * 4);
+
+    wbkgd(scoreboard, COLOR_PAIR(1));
     
     char key;
 
@@ -55,13 +59,12 @@ int snakeGame() {
         if (snake.getSize() < 3) snake.Dead(); // snake 길이가 3보다 작으면 게임 오버
 
         map.printMap();
-
-        box(scoreboard, 0, 0);
-        mvwprintw(scoreboard, 5, 1, "time: %d : %d", (tick / TICKSPEED) / 60, (tick / TICKSPEED) % 60);
+        printScoreboard(snake.getSize(), 3, snake.getitemCount(1), snake.getitemCount(), tick);
         
         refresh();
         wrefresh(scoreboard);
         touchwin(stdscr);
+        werase(scoreboard);
 
         if (isOver) {
             delwin(scoreboard);
@@ -71,6 +74,22 @@ int snakeGame() {
     }
     
     return -1;
+}
+
+WINDOW* initScoreboard(int y, int x) {
+    WINDOW* win{newwin(8, 25, y , x)};
+    return win;
+}
+
+void printScoreboard(int curlen, int maxlen, int growcount, int poisoncount, int tick) {
+    box(scoreboard, 0, 0);
+    mvwprintw(scoreboard, 0, 7, "Score board");
+
+    mvwprintw(scoreboard, 1, 1, "length: %d / %d", curlen, maxlen);
+    mvwprintw(scoreboard, 2, 1, "growth item: %d", growcount);
+    mvwprintw(scoreboard, 3, 1, "poison item: %d", poisoncount);
+    mvwprintw(scoreboard, 4, 1, "gate: 0");
+    mvwprintw(scoreboard, 5, 1, "time: %2d : %02d", (tick / TICKSPEED) / 60, (tick / TICKSPEED) % 60);
 }
 
 void Snake::Dead() { isOver = true; } // 게임 오버 처리
