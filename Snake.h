@@ -27,13 +27,13 @@ class Snake {
         
         DIR dir = LEFT; //��Ӹ� �ڵ� �̵� ����
     private:
-        int growCount{}, poisonCount{};
+        int growCount{}, poisonCount{}, gateCount{};
         std::deque<std::pair<int, int>> body;
         std::pair<int, int> head;
 
         enum STATE // 스네이크 상태 (다른 오브젝트와의 상호작용)
         {
-            NONE, GROW, GROWLESS // NONE: 상호작용하지 않은 상태 GROW: growth 아이템 획득 상태 GROWLESS: poison 아이템 획득 상태
+            NONE, GROW, GROWLESS, BLINKING // NONE: 상호작용하지 않은 상태 GROW: growth 아이템 획득 상태 GROWLESS: poison 아이템 획득 상태 blinking 게이트로 이동 중인 상태
         };
         STATE state = NONE;
         

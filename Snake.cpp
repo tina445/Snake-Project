@@ -3,7 +3,7 @@
 #include "Snake.h"
 #include "ItemManager.h"
 #include "objectid.h"
-
+#include "GateManager.h"
 using namespace std;
 
 Snake::Snake(pair<int, int> headPos, int sizeDefault)
@@ -13,6 +13,7 @@ Snake::Snake(pair<int, int> headPos, int sizeDefault)
 	for (int i = 1; i < sizeDefault; i++) { // snake body init
 		Snake::body.push_back({ headPos.first, headPos.second + i});
 	}
+
 }
 
 Snake::Snake() {}
@@ -41,6 +42,15 @@ void Snake::moveSnake(vector<vector<int>> &map, char input)
 	}
 
 	Collidable(map); // 충돌 판단
+
+	if (state == BLINKING)
+	{
+		std::pair<int, int> tmpPos = GateManager::Instance().BlinkPos({head.first, head.second}, map, dir); // 출구 게이트의 주변 빈공간 좌표
+		head.first = tmpPos.first; head.second = tmpPos.second; // 머리 좌표 게이트 통과된 새 좌표로 할당
+		map[head.first][head.second] = OBJECTID::head; //mapping
+		return;
+	}
+	
 
 	// snake 좌표 -> map 매핑
 	map[head.first][head.second] = OBJECTID::head; // 변경된 head 좌표를 map에 매핑
@@ -79,7 +89,11 @@ void Snake::Collidable(std::vector<std::vector<int>> &map)
 		itemManager::instance().destroyItem(map, {head.first, head.second});
 		state = GROWLESS;
 	}
-		
+	else if (map[head.first][head.second] == gate || map[head.first][head.second] == gate_pair) //게이트 충돌
+	{
+		gateCount++; // 게이트 충돌 횟수 기록
+		state = BLINKING;
+	}
 }
 
 void Snake::turnSnake(char key_input)
