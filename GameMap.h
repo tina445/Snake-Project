@@ -15,9 +15,6 @@ class GameMap{
         int xSize();
     private:
         void createMap();
-
-        int ySize();
-        int xSize();
     private:
         void createMap();
 
