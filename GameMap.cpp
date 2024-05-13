@@ -81,8 +81,8 @@ void GameMap::createMap(int stage) {
 void GameMap::printMap() { // map 출력
     for (int y = 0; y < ySize(); y++) {
         for (int x = 0; x < xSize(); x++) {
-            if (map[y][x] == 0) mvaddch(y, x * 4, '\t' | COLOR_PAIR(((y + x) % 2) + 1)); 
-            else mvaddch(y, x * 4, '\t' | COLOR_PAIR(map[y][x] + 2)); 
+            if (map[y][x] == 0) mvaddch(y + 1, x * 4, '\t' | COLOR_PAIR(((y + x) % 2) + 1)); 
+            else mvaddch(y + 1, x * 4, '\t' | COLOR_PAIR(map[y][x] + 2)); 
         }
         printw("\b\b\b\b\n");
     }

@@ -103,11 +103,11 @@ void Snake::turnSnake(char key_input)
 	if ((dir + 2) % 4 == prev ) Dead(); // 진행 방향과 반대 방향을 입력하면 게임 오버
 }
 
-int Snake::getSize() {
+int Snake::getSize() { // 스네이크 길이 반환
 	return body.size() + 1;
 }
 
-int Snake::getitemCount(int s) {
+int Snake::getitemCount(int s) { // s = 0일 경우(default) poison 카운트 return, 1일 경우 growth 카운트 return
 	if (s) return growCount;
 
 	return poisonCount;
