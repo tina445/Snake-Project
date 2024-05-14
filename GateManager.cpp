@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <time.h>
 
-void GateManager::SpawnGate(std::vector<std::vector<int>> &map, int tick)
+void GateManager::SpawnGate(std::vector<std::vector<int>> &map, int tick, int snakeBodyNum)
 {
-    if (lastSpawnTime + coolTime >= tick || wallPos.size() == 0)
+    if (!isSpawnGate(snakeBodyNum, tick))
         return;
     srand(time(NULL));
     lastSpawnTime = tick; // 리스폰 시간 초기화
@@ -26,8 +26,34 @@ void GateManager::SpawnGate(std::vector<std::vector<int>> &map, int tick)
     
 }
 
+bool GateManager::isSpawnGate(int snakeBodyNum, int tick) 
+{
+    if (lastSpawnTime + coolTime >= tick || wallPos.size() == 0)
+        return false;
+    else if (isPassingThrought) // 게이트 통과중인지 판단
+    {
+        if (initialTick == 0) // 처음 게이트에 충돌 or 다시 게이트에 충돌시 initialTick 재기록
+        {
+            initialTick = tick;
+            return false;
+        }
+        else if (snakeBodyNum < tick-initialTick) // tick-initialTick < snakeBodyNum 즉 뱀 몸통 길이보다 많은 Tick이 흘렀다면 뱀이 전부 통과함
+        {
+            isPassingThrought = false;
+            return true;
+        }
+        else
+            return false;
+    }
+    else
+        return true;
+}
+
 std::pair<int, int> GateManager::BlinkPos(std::pair<int, int> curGate, std::vector<std::vector<int>> &map, int dir)
 {
+    isPassingThrought = true; // 뱀이 게이트 통과중
+    resetInitialTick(); // 뱀의 게이트 탈출여부 관리 변수 초기화
+
     std::pair<int, int> otherGate = (gate == curGate) ? gate_pair : gate; // 출구 게이트 찾기
     std::pair<int, int> res;
     int otherGateY = otherGate.first; // 출구 게이트 Y
@@ -50,9 +76,19 @@ std::pair<int, int> GateManager::BlinkPos(std::pair<int, int> curGate, std::vect
             break;
     }
     
-    
-    
     return curGate;
+}
+
+void GateManager::initialization()
+{
+    while (!wallPos.empty())
+        wallPos.pop_back();
+    blinkDir = 0;
+    coolTime = 0;
+    lastSpawnTime = 0;
+    gate = {0, 0};
+    gate_pair = {0, 0};
+    
 }
 
 GateManager& GateManager::Instance()

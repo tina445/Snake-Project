@@ -1,21 +1,24 @@
 #include <vector>
-#define MAXSPAWNTIME 100
-#define MINSPAWNTIME 10 
+#define MAXSPAWNTIME 50
+#define MINSPAWNTIME 20
 class GateManager
 {
     public:
         static GateManager& Instance();
 
 
-        void SpawnGate(std::vector<std::vector<int>> &map, int tick);
+        void SpawnGate(std::vector<std::vector<int>> &map, int tick, int snakeBodyNum);
         std::pair<int, int> BlinkPos(std::pair<int, int> curGate, std::vector<std::vector<int>> &map, int dir); // 게이트 충돌시 다른 게이트의 주변 빈공간 반환
         std::pair<int, int> getGatePos() { return gate;}
         std::pair<int, int> getGate_PairPos() { return gate_pair;}
         void setWallPos(std::pair<int, int> pos) {wallPos.push_back(pos);}
         int getBlinkDir() { return blinkDir; }
+        void initialization(); // 게이트 매니저 초기화
+        bool isSpawnGate(int snakeBodyNum, int tick); // 게이트 (재)스폰 가능 여부 판단
     private:
         GateManager();
-        
+        void resetInitialTick() {initialTick = 0;} // 게이트 재충돌시 시간 측정 변수 초기화 
+
         std::vector<std::pair<int, int>> wallPos; // 벽 좌표들
         static GateManager* _instance;
         std::pair<int, int> gate; // 게이트 좌표
@@ -24,4 +27,6 @@ class GateManager
         int blinkDir = 0; // 게이트 통과 후 뱀 방향
         int lastSpawnTime = 0;
         int coolTime = 0;
+        bool isPassingThrought = false;
+        int initialTick = 0; // 뱀이 전부 통과했는지 판단하기 위한 시간 측정 변수
 };
