@@ -28,7 +28,7 @@ class GameMap{
                                         {"stage/world2-1.map", "stage/world2-2.map", "stage/world2-3.map", "stage/world2-4.map", "stage/world2-5.map"},
                                         {"stage/world3-1.map", "stage/world3-2.map", "stage/world3-3.map", "stage/world3-4.map", "stage/world3-5.map"},
                                         {"stage/world4-1.map", "stage/world4-2.map", "stage/world4-3.map", "stage/world4-4.map", "stage/world4-5.map"},
-                                        {"stage/world5.map"}};
+                                        {"stage/world5-1.map", "stage/world5-2.map"}};
 };
 
 #endif /* GAMEMAP */

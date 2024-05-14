@@ -5,22 +5,23 @@
 #include <ncurses.h>
 
 #define TICKSPEED 6 // tick per second
-#define MAXSTAGE 3 // 최대 스테이지 수
+#define MAXSTAGE 5 // 최대 스테이지 수
 
 using namespace std;
 
 int tick; // 시간 경과 기록 (앞서 설정한 tick 단위)
-int stage{1}; // 현재 스테이지
+int stage{4}; // 현재 스테이지
 bool isOver{false}; // 게임 오버 여부 check
 bool isClear{false}; // 스테이지 클리어 여부 check
 WINDOW *scoreboard, *missionboard;
 InputManager key_input;
 
+// 함수 정의부
 WINDOW* initBoard(int y, int x); // 메인 맵과 겹치지 않도록 좌표 y, x에 스코어보드를 관리할 window 객체 생성
-int snakeGame();
-void nextStage(int tick);
-vector<pair<int, bool>> createMission();
-bool compareMission(vector<pair<int, bool>> &mission, vector<int> score);
+int snakeGame(); // 스네이크 게임 함수
+void nextStage(int tick); // 스테이지 클리어시 다음 스테이지 진행 대기
+vector<pair<int, bool>> createMission(); // 스테이지 목표 생성
+bool compareMission(vector<pair<int, bool>> &mission, vector<int> score); // 목표 달성 여부 판별
 void printScoreboard(int curlen, int maxlen, int growcount, int poisoncount, int gate, int tick); // 스코어보드 출력
 void printMissionboard(vector<pair<int, bool>> &mission);
 
@@ -86,8 +87,8 @@ int snakeGame() {
         refresh();
         wrefresh(scoreboard);
         wrefresh(missionboard);
-        werase(scoreboard);
-        werase(missionboard);
+        wclear(scoreboard);
+        wclear(missionboard);
 
         if (isOver) {
             delwin(scoreboard);
