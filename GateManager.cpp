@@ -30,18 +30,27 @@ std::pair<int, int> GateManager::BlinkPos(std::pair<int, int> curGate, std::vect
 {
     std::pair<int, int> otherGate = (gate == curGate) ? gate_pair : gate; // 출구 게이트 찾기
     std::pair<int, int> res;
-
-    if  (map[otherGate.first + direation[dir].first][otherGate.second + direation[dir].second] == 0) // 뱀 집입 방향 공간 확인
-        return res = {otherGate.first + direation[dir].first, otherGate.second + direation[dir].second};
+    int otherGateY = otherGate.first; // 출구 게이트 Y
+    int otherGateX = otherGate.second;// 출구 게이트 X
+    int saveDir = dir;
+    while (1)
+    {
+        if ((0 < otherGateY + direation[saveDir].first && otherGateY + direation[saveDir].first < map.size()) && (0 < otherGateX + direation[saveDir].second && otherGateX + direation[saveDir].second < map[0].size()) 
+        && map[otherGateY + direation[saveDir].first][otherGateX + direation[saveDir].second] == 0)
+        {
+            
+            blinkDir = saveDir;
+            if (blinkDir == 2 || blinkDir == 3)
+                blinkDir = (blinkDir == 2) ? 3 : 2;
+            return {otherGateY + direation[saveDir].first, otherGateX + direation[saveDir].second};
+        }
+        
+        saveDir = (saveDir + 1) % 4;
+        if (saveDir == dir)
+            break;
+    }
     
-    if (map[otherGate.first + direation[(dir + 1) % 4].first][otherGate.second + direation[(dir + 1) % 4].second] == 0) // 시계방향 회전 후 공간 확인
-        return res = {otherGate.first + direation[(dir + 1) % 4].first, otherGate.second + direation[(dir + 1) % 4].second};
-
-    if (map[otherGate.first + direation[((dir - 1) + 4 )% 4].first][otherGate.second + direation[((dir - 1) + 4 )% 4].second] == 0) // 반시계 방향 회전 후 공간 확인
-        return res = {otherGate.first + direation[((dir - 1) + 4 )% 4].first, otherGate.second + direation[((dir - 1) + 4 )% 4].second};
-
-    if (map[otherGate.first + direation[(dir + 2) % 4].first][otherGate.second + direation[(dir + 2) % 4].second] == 0) // 짐입 반대 방향 회전 후 공간 확인
-        return res = {otherGate.first + direation[(dir + 2) % 4].first, otherGate.second + direation[(dir + 2) % 4].second};
+    
     
     return curGate;
 }
