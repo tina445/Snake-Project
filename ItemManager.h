@@ -1,6 +1,6 @@
 #define MAXITEM 3
-#define MAXSPAWNDELAY 30
-#define MINSPAWNDELAY 6
+#define MAXSPAWNDELAY 14
+#define MINSPAWNDELAY 4
 
 #include <vector>
 #include <list>

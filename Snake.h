@@ -18,6 +18,7 @@ class Snake {
         void Collidable(std::vector<std::vector<int>> &map);
         int getSize();
         int getitemCount(int s = 0);
+        int getgateCount();
         void Dead();
 
     public:
@@ -28,13 +29,14 @@ class Snake {
         
         DIR dir = LEFT; //��Ӹ� �ڵ� �̵� ����
     private:
-        int growCount{}, poisonCount{};
+        int growCount{}, poisonCount{}, gateCount{};
         std::deque<std::pair<int, int>> body;
         std::pair<int, int> head;
 
         enum STATE // 스네이크 상태 (다른 오브젝트와의 상호작용)
         {
-            NONE, GROW, GROWLESS // NONE: 상호작용하지 않은 상태 GROW: growth 아이템 획득 상태 GROWLESS: poison 아이템 획득 상태
+            NONE, GROW, GROWLESS, BLINKING  // NONE: 상호작용하지 않은 상태 GROW: growth 아이템 획득 상태 
+                                            // GROWLESS: poison 아이템 획득 상태 BLINKING: gate를 통과중인 상태 
         };
         STATE state = NONE;
         

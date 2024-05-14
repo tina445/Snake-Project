@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "GameMap.h"
 #include "objectid.h"
+#include "GateManager.h"
 
 using namespace std;
 
@@ -30,6 +31,10 @@ GameMap::GameMap(int stage) {
     init_pair(head, COLOR_BLACK, blue);
     init_pair(growth, COLOR_BLACK, red);
     init_pair(poison, COLOR_BLACK, purple);
+    init_pair(gate, COLOR_BLACK, COLOR_MAGENTA);
+    init_pair(gate + 1, COLOR_BLACK, COLOR_MAGENTA);
+
+    
 }
 
 GameMap::GameMap() {
@@ -55,6 +60,7 @@ GameMap::GameMap() {
     init_pair(growth, COLOR_BLACK, red);
     init_pair(poison, COLOR_BLACK, purple);
     init_pair(gate, COLOR_BLACK, COLOR_MAGENTA);
+    init_pair(gate + 1, COLOR_BLACK, COLOR_MAGENTA);
 }
 
 void GameMap::createMap(int stage) {
@@ -69,8 +75,10 @@ void GameMap::createMap(int stage) {
             map.push_back(tmp);
             getline(readfile, line);
         
-            for (char obj : line) {
-                map[i].push_back(obj % '0'); // 맵에 해당하는 오브젝트 저장
+            for (int j = 0; j < line.size(); j++) {
+                if (line[j] % '0' == 1)
+                    GateManager::Instance().setWallPos({i,j}); // 게이트 매니저의 벽 좌표 벡터에 기록(push)
+                map[i].push_back(line[j] % '0'); // 맵에 해당하는 오브젝트 저장
             }
         }   
     }
