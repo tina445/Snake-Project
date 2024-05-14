@@ -4,23 +4,25 @@
 #include "ItemManager.h"
 #include <ncurses.h>
 
-#define TICKSPEED 3 // tick per second
-#define MAXSTAGE 5 // 최대 스테이지 수
+#define TICKSPEED 6 // tick per second
+#define MAXSTAGE 3 // 최대 스테이지 수
 
 using namespace std;
 
-unsigned int tick; // 시간 경과 기록 (앞서 설정한 tick 단위)
+int tick; // 시간 경과 기록 (앞서 설정한 tick 단위)
 int stage{1}; // 현재 스테이지
 bool isOver{false}; // 게임 오버 여부 check
 bool isClear{false}; // 스테이지 클리어 여부 check
 WINDOW *scoreboard, *missionboard;
-
-int snakeGame();
+InputManager key_input;
 
 WINDOW* initBoard(int y, int x); // 메인 맵과 겹치지 않도록 좌표 y, x에 스코어보드를 관리할 window 객체 생성
-
-void printScoreboard(int curlen, int maxlen, int growcount, int poisoncount, int tick); // 스코어보드 출력
-void printMissionboard();
+int snakeGame();
+void nextStage(int tick);
+vector<pair<int, bool>> createMission();
+bool compareMission(vector<pair<int, bool>> &mission, vector<int> score);
+void printScoreboard(int curlen, int maxlen, int growcount, int poisoncount, int gate, int tick); // 스코어보드 출력
+void printMissionboard(vector<pair<int, bool>> &mission);
 
 int main(int agrc, char *argv[]) {
     // Strat()
@@ -30,11 +32,19 @@ int main(int agrc, char *argv[]) {
     keypad(stdscr, true);
     start_color();
     curs_set(0);
+
+    int gamestate;
     
     // Update()
     while (1) {
-        int x = snakeGame();
-        if (x == -1) break;
+        gamestate = snakeGame();
+        if (gamestate == -1) break; // 게임 실패
+        else if (gamestate == 1) { // 모든 스테이지를 클리어
+            printw("Congratulations!! You cleared All stage!!");
+            refresh();
+            napms(5000);
+            break;
+        }
     }
 
     endwin();
@@ -42,19 +52,20 @@ int main(int agrc, char *argv[]) {
 
 int snakeGame() {
     // Start()
+    clear();
     tick = 0;
-    InputManager key_input;
+    
     GameMap map{stage};
     Snake snake{{map.ySize() / 2, map.xSize() / 2}, SNAKE_DEFAULT}; // 스네이크 객체
-    vector<pair<int, bool>> missions(5); // 미션들을 관리하는 벡터
+    vector<pair<int, bool>> missions{createMission()}; // 미션들을 관리하는 벡터
     
     scoreboard = initBoard(2, (map.xSize() + 1) * 4);
     missionboard = initBoard(11, (map.xSize() + 1) * 4);
     wbkgd(scoreboard, COLOR_PAIR(1));
     wbkgd(missionboard, COLOR_PAIR(1));
-    mvprintw(0, (map.xSize() / 2) * 4, "Stage %d", stage);
+    mvprintw(0, (map.xSize() / 2) * 4, "Stage %d", stage); // 현재 스테이지 표시
     
-    int maxsize{3}; // 한 스테이지에서 도달한 스네이크의 최대 길이
+    int maxsize{SNAKE_DEFAULT}; // 한 스테이지에서 도달한 스네이크의 최대 길이
     char key;
 
     // Update()
@@ -69,8 +80,8 @@ int snakeGame() {
         maxsize = (snake.getSize() > maxsize ? snake.getSize() : maxsize); // 스네이크의 max length 판별
 
         map.printMap();
-        printScoreboard(snake.getSize(), maxsize, snake.getitemCount(1), snake.getitemCount(), tick); // 메인 맵 옆에 스코어보드 출력
-        printMissionboard(); // 메인 맵 옆에 미션 보드 출력
+        printScoreboard(snake.getSize(), maxsize, snake.getitemCount(1), snake.getitemCount(), 0, tick); // 메인 맵 옆에 스코어보드 출력
+        printMissionboard(missions); // 메인 맵 옆에 미션 보드 출력
 
         refresh();
         wrefresh(scoreboard);
@@ -81,12 +92,22 @@ int snakeGame() {
         if (isOver) {
             delwin(scoreboard);
             delwin(missionboard);
-            break;
+            return -1; // 게임 실패
         }
+        else if (compareMission(missions, {maxsize, snake.getitemCount(1), snake.getitemCount(), 0, tick})) { // 모든 목표를 달성했는지 확인
+            if (stage >= MAXSTAGE) return 1; // 모든 스테이지를 성공
+            
+            stage++;
+
+            nextStage(tick);
+
+            delwin(scoreboard);
+            delwin(missionboard);
+            return 0; // 스테이지 성공
+        }
+
         napms(1000 / TICKSPEED);
     }
-    
-    return -1;
 }
 
 WINDOW* initBoard(int y, int x) {
@@ -94,21 +115,78 @@ WINDOW* initBoard(int y, int x) {
     return win;
 }
 
-void printScoreboard(int curlen, int maxlen, int growcount, int poisoncount, int tick) { 
+void printScoreboard(int curlen, int maxlen, int growcount, int poisoncount, int gate, int tick) { 
     box(scoreboard, 0, 0);
     mvwprintw(scoreboard, 0, 7, "Score board");
 
     mvwprintw(scoreboard, 1, 1, "length: %2d / %2d", curlen, maxlen); // B: current length / max length
     mvwprintw(scoreboard, 2, 1, "growth item: %d", growcount); // +: 획득한 growth items
     mvwprintw(scoreboard, 3, 1, "poison item: %d", poisoncount); // -: 획득한 poison items
-    mvwprintw(scoreboard, 4, 1, "gate: 0"); // G: gate 사용 횟수
+    mvwprintw(scoreboard, 4, 1, "gate: %d", gate); // G: gate 사용 횟수
     mvwprintw(scoreboard, 5, 1, "time: %2d : %02d", (tick / TICKSPEED) / 60, (tick / TICKSPEED) % 60); // 게임 플레이 타임(스테이지별)
 }
 
-void printMissionboard() {
+void printMissionboard(vector<pair<int, bool>> &mission) { // 미션 내용을 메인 맵 옆에 출력
     box(missionboard, 0, 0);
     mvwprintw(missionboard, 0, 6, "Mission board");
+    
+    mvwprintw(missionboard, 1, 1, "length: %d", mission[0].first); // B: current length / max length
+    mvwprintw(missionboard, 2, 1, "growth item: %d", mission[1].first); // +: 획득한 growth items
+    mvwprintw(missionboard, 3, 1, "poison item: %d", mission[2].first); // -: 획득한 poison items
+    mvwprintw(missionboard, 4, 1, "gate: %d", mission[3].first); // G: gate 사용 횟수
+    mvwprintw(missionboard, 5, 1, "time: %d", mission[4].first / TICKSPEED); // 게임 플레이 타임
 
+    for (int i = 0; i < mission.size(); i++) {
+        mvwprintw(missionboard, i + 1, 18, "( %c )", mission[i].second ? 'v' : ' '); // 목표 달성 여부 출력 (달성했을 경우 체크 표시)
+    }
+}
+
+void nextStage(int tick) { // 다음 스테이지 진출 확인
+    int y, x;
+    itemManager::instance().delitemArr(); // 아이템 리스트 비우기
+
+    printw("Stage clear!\n");
+    for (int t = tick + (TICKSPEED * 5); t > tick; t--) { // 다음 스테이지 실행까지 5초 기다리기
+        
+        printw("move next stage in %d seconds...\n", ((t - tick) / TICKSPEED) % 60);
+        printw("press ENTER to continue");
+        getyx(stdscr, y, x);
+        if (key_input.keyDown() == 'N') return; // 엔터키를 누르면 즉시 다음 스테이지 실행
+        refresh();
+
+        move(y, 0);
+        deleteln();
+        move(y - 1,0);
+        deleteln();
+
+        napms(1000 / TICKSPEED);
+    }
+}
+
+vector<pair<int, bool>> createMission() { // 각 스테이지별로 미션 생성
+    vector<pair<int, bool>> vec;
+    srand(time(NULL));
+
+    vec.push_back({6 + stage * 2 + (rand() % 5), false}); // 최대 몸 길이(B) 목표 8~13, 10~15, 12~17, 14~19, 16~21
+    vec.push_back({5 + stage + (rand() % 3), false}); // growth item(+) 목표 6~9, 7~10 8~11, 9~12, 10~13
+    vec.push_back({2 + stage + (rand() % 2), false}); // poison item(-) 목표 3~5, 4~6, 5~7, 6~8, 7~9
+    vec.push_back({1 + (stage / 2) + (rand() % 2), true}); // gate 통과(G) 목표 1~3, 2~4, 2~4, 3~5, 3~5 
+    vec.push_back({((50 + (stage * 10)) * TICKSPEED), false}); // 플레이 시간(sec) 목표 60, 70, 80, 90, 100
+
+    return vec;
+}
+
+bool compareMission(vector<pair<int, bool>> &mission, vector<int> score) { // 미션 성공 여부 판별
+    int count{};
+    for (int i = 0; i < mission.size(); i++) {
+        if (score[i] >= mission[i].first) mission[i].second = true;
+
+        if (mission[i].second) count++;
+    }
+
+    if (count == mission.size()) return true;
+    
+    return false;
 }
 
 void Snake::Dead() { isOver = true; } // 게임 오버 처리

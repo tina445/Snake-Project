@@ -44,6 +44,15 @@ void itemManager::destroyItem(std::vector<std::vector<int>> &map, std::pair<int,
     }
 }
 
+void itemManager::delitemArr() { // 아이템 리스트 초기화
+    for (std::list<item*>::iterator iter = itemArr.begin(); iter != itemArr.end(); ++iter) {
+        delete *iter; // 메모리 할당 해제
+    }
+
+    itemArr.clear();
+    lastSpawnTick = 0;
+}
+
 // private method 정의부
 itemManager& itemManager::instance() { // static instance init
     if (_instance == nullptr)

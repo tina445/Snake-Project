@@ -19,7 +19,7 @@ char InputManager::keyDown() {
     case KEY_RIGHT:
         ch = 'R';
         break;
-    case KEY_ENTER:
+    case '\n':
         ch = 'N';
         break;
     default:
