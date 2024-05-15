@@ -41,7 +41,7 @@ void Snake::moveSnake(vector<vector<int>> &map, char input)
 		break;
 	}
 
-	if ((head.first < 0 || head.first >= map.size()) || (head.second < 0 || head.second >= map[0].size()))
+	if ((head.first < 0 || head.first > map.size()) || (head.second < 0 || head.second > map[0].size()))
 		Dead(); // 게이트 도달 도중 삭제 등의 이유로 스네이크 head 좌표가 맵 밖을 벗어나면 벽에 충돌한것으로 간주, 게임 오버
 
 	Collidable(map); // 충돌 판단

@@ -1,4 +1,5 @@
 #include "GateManager.h"
+#include "objectid.h"
 #include <stdlib.h>
 #include <time.h>
 
@@ -71,11 +72,14 @@ std::pair<int, int> GateManager::BlinkPos(std::pair<int, int> curGate, std::vect
 
 bool GateManager::checkBlink(std::pair<int, int> GatePos, int dir, std::vector<std::vector<int>> &map)
 {
-    if ((0 <= GatePos.first + direation[dir].first && GatePos.first + direation[dir].first < map.size()) && // 게이트 통과 후 진행방향이 맵 밖인지 검사
-        (0 <= GatePos.second + direation[dir].second && GatePos.second + direation[dir].second < map[0].size()) &&
-        map[GatePos.first + direation[dir].first][GatePos.second + direation[dir].second] == 0) // 게이트 통과 후 진행방향이 빈공간인지 검사
-    {
-        return true;
+    GatePos.first += direation[dir].first, GatePos.second += direation[dir].second;
+
+    if ((0 < GatePos.first && GatePos.first < map.size()) && (0 < GatePos.second && GatePos.second < map[0].size())) { // 게이트 통과 후 진행방향이 맵 밖인지 검사
+        if (map[GatePos.first][GatePos.second] == space || // 게이트 통과 후 진행방향이 빈공간인지 검사
+            map[GatePos.first][GatePos.second] == growth || // 게이트 통과 후 진행방향이 growth 아이템인지 검사
+            map[GatePos.first][GatePos.second] == poison ) { // 게이트 통과 후 진행방향이 poison 아이템인지 검사 -> 스네이크가 통과 가능한 유형 
+                return true;
+            }
     }
     return false;
 }
@@ -84,8 +88,10 @@ void GateManager::initialization() // GateManager 초기화
 {
     wallPos.clear();
     blinkDir = 0;
-    coolTime = 0;
+    coolTime = 40;
     lastSpawnTime = 0;
+    initialTick = 0;
+    isPassingThrought = false;
     gate = gate_pair = {0, 0};
 }
 

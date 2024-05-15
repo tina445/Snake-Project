@@ -28,7 +28,7 @@ class GateManager
         std::vector<std::pair<int, int>> direation{{-1, 0}, {0, 1}, {1, 0},{0, -1}}; // 방향좌표 기본 -> 시계 -> 반시계 -> 반대
         int blinkDir = 0; // 게이트 통과 후 뱀 방향
         int lastSpawnTime = 0;
-        int coolTime = 0;
+        int coolTime = 40;
         bool isPassingThrought = false;
         int initialTick = 0; // 뱀이 전부 통과했는지 판단하기 위한 시간 측정 변수
 };
