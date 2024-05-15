@@ -49,7 +49,7 @@ void Snake::moveSnake(vector<vector<int>> &map, char input)
 	if (state == BLINKING) // 
 	{
 		std::pair<int, int> tmpPos = GateManager::Instance().BlinkPos({head.first, head.second}, map, dir); // 출구 게이트의 주변 빈공간 좌표
-		head.first = tmpPos.first, head.second = tmpPos.second; // 머리 좌표 게이트 통과된 새 좌표로 할당
+		head = tmpPos; // 머리 좌표 게이트 통과된 새 좌표로 할당
 		dir = static_cast<DIR>(GateManager::Instance().getBlinkDir()); // 게이트 통과 방향 우선순위에 따라 스네이크 이동방향 결정
 		map[body.back().first][body.back().second] = 0; // snake tail(body deque의 back index)좌표를 빈 공간으로 대체
 		body.pop_back();

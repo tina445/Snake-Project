@@ -11,7 +11,7 @@
 using namespace std;
 
 int tick; // 시간 경과 기록 (앞서 설정한 tick 단위)
-int stage{5}; // 현재 스테이지
+int stage{1}; // 현재 스테이지
 bool isOver{false}; // 게임 오버 여부 check
 bool isClear{false}; // 스테이지 클리어 여부 check
 WINDOW *scoreboard, *missionboard;
@@ -55,6 +55,8 @@ int main(int agrc, char *argv[]) {
 int snakeGame() {
     // Start()
     clear();
+    itemManager::instance().delitemArr(); // 아이템 리스트 비우기
+    GateManager::Instance().initialization(); // 게이트 로직 초기화 
     tick = 0;
     
     GameMap map{stage};
@@ -63,8 +65,6 @@ int snakeGame() {
     
     scoreboard = initBoard(2, (map.xSize() + 1) * 4);
     missionboard = initBoard(11, (map.xSize() + 1) * 4);
-    //wbkgd(scoreboard, COLOR_PAIR(1));
-    //wbkgd(missionboard, COLOR_PAIR(1));
     mvprintw(0, (map.xSize() / 2) * 4, "Stage %d", stage); // 현재 스테이지 표시
     
     int maxsize{SNAKE_DEFAULT}; // 한 스테이지에서 도달한 스네이크의 최대 길이
@@ -146,8 +146,6 @@ void printMissionboard(vector<pair<int, bool>> &mission) { // 미션 내용을 �
 
 void nextStage(int tick) { // 다음 스테이지 진출 확인
     int y, x;
-    itemManager::instance().delitemArr(); // 아이템 리스트 비우기
-    GateManager::Instance().initialization(); // 게이트 로직 초기화 
 
     printw("Stage clear!\n");
     for (int t = tick + (TICKSPEED * 5); t > tick; t--) { // 다음 스테이지 실행까지 5초 기다리기
@@ -171,8 +169,8 @@ vector<pair<int, bool>> createMission() { // 각 스테이지별로 미션 생�
     vector<pair<int, bool>> vec;
     srand(time(NULL));
 
-    vec.push_back({6 + stage * 2 + (rand() % 5), false}); // 최대 몸 길이(B) 목표 8~13, 10~15, 12~17, 14~19, 16~21
-    vec.push_back({5 + stage + (rand() % 3), false}); // growth item(+) 목표 6~9, 7~10 8~11, 9~12, 10~13
+    vec.push_back({7 + stage + (rand() % 3), false}); // 최대 몸 길이(B) 목표 8~11, 9~12, 10~13, 11~14, 12~15
+    vec.push_back({5 + (stage - 1) + (rand() % 3), false}); // growth item(+) 목표 5~8, 6~9 7~10, 8~11, 9~12
     vec.push_back({2 + stage + (rand() % 2), false}); // poison item(-) 목표 3~5, 4~6, 5~7, 6~8, 7~9
     vec.push_back({1 + (stage / 2) + (rand() % 2), false}); // gate 통과(G) 목표 1~3, 2~4, 2~4, 3~5, 3~5 
     vec.push_back({((50 + (stage * 10)) * TICKSPEED), false}); // 플레이 시간(sec) 목표 60, 70, 80, 90, 100

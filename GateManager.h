@@ -1,6 +1,6 @@
 #include <vector>
 #define MAXSPAWNTIME 30
-#define MINSPAWNTIME 20
+#define MINSPAWNTIME 15
 
 class GateManager
 {
@@ -22,8 +22,9 @@ class GateManager
 
         std::vector<std::pair<int, int>> wallPos; // 게이트 스폰 좌표 판단을 위해 미리 저장할 벽 좌표 벡터
         static GateManager* _instance;
-        std::pair<int, int> gate; // 게이트 좌표
-        std::pair<int, int> gate_pair; // 게이트 좌표
+        std::pair<int, int> gate{0, 0}; // 게이트 좌표
+        std::pair<int, int> gate_pair{0, 0}; // 게이트 좌표
+        std::vector<int> rotate{0, 1, 3, 2}; // 진출 방향 우선순위 (진입 방향 -> 시계 방향 -> 반시계 방향 -> 반대 방향)
         std::vector<std::pair<int, int>> direation{{-1, 0}, {0, 1}, {1, 0},{0, -1}}; // 방향좌표 기본 -> 시계 -> 반시계 -> 반대
         int blinkDir = 0; // 게이트 통과 후 뱀 방향
         int lastSpawnTime = 0;

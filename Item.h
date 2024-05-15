@@ -1,5 +1,5 @@
 #include <vector>
-#define DURATION 60 // 아이템 유지 시간(tick)
+#define DURATION 36 // 아이템 유지 시간(tick)
 
 class item
 {
