@@ -18,12 +18,13 @@ class GateManager
     private:
         GateManager();
         void resetInitialTick(); // 게이트 재충돌시 시간 측정 변수 초기화 
+        bool checkBlink(std::pair<int, int> GatePos, int dir, std::vector<std::vector<int>> &map);
 
         std::vector<std::pair<int, int>> wallPos; // 게이트 스폰 좌표 판단을 위해 미리 저장할 벽 좌표 벡터
         static GateManager* _instance;
         std::pair<int, int> gate; // 게이트 좌표
         std::pair<int, int> gate_pair; // 게이트 좌표
-        std::vector<std::pair<int, int>> direation{{-1, 0}, {0, 1}, {0, -1},{1, 0}}; // 방향좌표 기본 -> 시계 -> 반시계 -> 반대
+        std::vector<std::pair<int, int>> direation{{-1, 0}, {0, 1}, {1, 0},{0, -1}}; // 방향좌표 기본 -> 시계 -> 반시계 -> 반대
         int blinkDir = 0; // 게이트 통과 후 뱀 방향
         int lastSpawnTime = 0;
         int coolTime = 0;

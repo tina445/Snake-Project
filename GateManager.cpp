@@ -56,27 +56,44 @@ std::pair<int, int> GateManager::BlinkPos(std::pair<int, int> curGate, std::vect
 
     std::pair<int, int> otherGate = (gate == curGate) ? gate_pair : gate; // 출구 게이트 찾기
     std::pair<int, int> res;
-    int otherGateY = otherGate.first; // 출구 게이트 Y좌표
-    int otherGateX = otherGate.second;// 출구 게이트 X좌표
-    int saveDir = dir;
-    while (1)
+    int tmpDir = dir; // 뱀의 게이트 충돌전 기본 방향
+    if (checkBlink(otherGate, tmpDir, map))
     {
-        if ((0 < otherGateY + direation[saveDir].first && otherGateY + direation[saveDir].first < map.size()) // 이동방향 좌표가 맵 밖을 벗어났는지 검사
-        && (0 < otherGateX + direation[saveDir].second && otherGateX + direation[saveDir].second < map[0].size()) 
-        && map[otherGateY + direation[saveDir].first][otherGateX + direation[saveDir].second] == 0) // 이동방향 좌표가 이동할 수 있는 빈 공간인지 검사
-        {
-            blinkDir = saveDir;
-            if (blinkDir == 2 || blinkDir == 3)
-                blinkDir = (blinkDir == 2) ? 3 : 2;
-            return {otherGateY + direation[saveDir].first, otherGateX + direation[saveDir].second};
-        }
-        
-        saveDir = (saveDir + 1) % 4;
-        if (saveDir == dir)
-            break;
+        blinkDir = tmpDir; // 게이트 통과후 뱀이 이동할 방향
+        return {otherGate.first + direation[tmpDir].first, otherGate.second + direation[tmpDir].second};
     }
-    
+
+    tmpDir = (tmpDir + 1) % 4; // 시계방향 회전
+    if (checkBlink(otherGate, tmpDir, map))
+    {
+        blinkDir = tmpDir;
+        return {otherGate.first + direation[tmpDir].first, otherGate.second + direation[tmpDir].second};
+    }
+
+    tmpDir = ((tmpDir - 1) + 4) % 4; // 반시계 방향 회전
+    if (checkBlink(otherGate, tmpDir, map))
+    {
+        blinkDir = tmpDir;
+        return {otherGate.first + direation[tmpDir].first, otherGate.second + direation[tmpDir].second};
+    }
+
+    tmpDir = (tmpDir + 2) % 4; // 반대 방향 회전
+    if (checkBlink(otherGate, tmpDir, map))
+    {
+        blinkDir = tmpDir;
+        return {otherGate.first + direation[tmpDir].first, otherGate.second + direation[tmpDir].second};
+    }
     return curGate;
+}
+
+bool GateManager::checkBlink(std::pair<int, int> GatePos, int dir, std::vector<std::vector<int>> &map)
+{
+    if ((0 < GatePos.first + direation[dir].first && GatePos.first + direation[dir].first < map.size()) && (0 < GatePos.second + direation[dir].second && GatePos.second + direation[dir].second < map[0].size())
+    && map[GatePos.first + direation[dir].first][GatePos.second + direation[dir].second] == 0)
+    {
+        return true;
+    }
+    return false;
 }
 
 void GateManager::initialization() // GateManager 초기화 
