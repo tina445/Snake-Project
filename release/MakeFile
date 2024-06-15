@@ -1,0 +1,27 @@
+CC = g++
+CFLAGS = -g -o -Wall
+LDFLAGS = -lncurses
+OBJS = GameMap.o \
+InputManager.o \
+Snake.o \
+Item.o \
+ItemManager.o \
+GateManager.o \
+SnakeGame.o
+
+TARGET = game.out
+
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) $@ $(OBJS) -lncurses
+
+clean:
+	rm -f *.o
+	rm -f $(TARGET)
+
+SnakeGame.o : GameMap.h InputManager.h Snake.h ItemManager.h GateManager.h SnakeGame.cpp
+GateManager.o : GateManager.h objectid.h GateManager.cpp
+ItemManager.o : ItemManager.h Item.h ItemManager.cpp
+Item.o : Item.h objectid.h Item.cpp
+Snake.o : Snake.h ItemManager.h objectid.h GateManager.h Snake.cpp
+InputManager.o : InputManager.h InputManager.cpp
+GameMap.o : GameMap.h objectid.h GateManager.h GameMap.cpp
